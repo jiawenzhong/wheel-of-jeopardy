@@ -3,11 +3,28 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { Router, Route, Switch } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+import * as ROUTES from './constants';
+import * as Screens from './pages';
+
+const history = createBrowserHistory();
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Router history={history}>
+    <React.StrictMode>
+      <App>
+        <Switch>
+        <Route exact path={ROUTES.HOME}>
+          <Screens.Home />
+        </Route>
+        <Route exact path={ROUTES.GAME}>
+          <Screens.Game />
+        </Route>
+        </Switch>
+      </App>
+    </React.StrictMode>
+  </Router>,
   document.getElementById('root')
 );
 
