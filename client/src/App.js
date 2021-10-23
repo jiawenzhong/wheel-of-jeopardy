@@ -1,23 +1,19 @@
-import logo from './logo.svg';
+import { makeStyles } from '@material-ui/core';
+import clsx from 'clsx';
 import './App.css';
 
-function App() {
+const useStyles = makeStyles((theme) => ({
+  root: {
+    paddingTop: 100,
+  },
+}));
+
+const App = ({children}) => {
+  const styles = useStyles();
+  
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={clsx("App", styles.root)}>
+      {children}
     </div>
   );
 }
