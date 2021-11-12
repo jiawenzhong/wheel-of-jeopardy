@@ -6,9 +6,9 @@ const data = [
   { option: 'Animal', style: { backgroundColor: 'green', textColor: 'white' } },
   { option: 'Sport', style: { backgroundColor: 'red', textColor: 'white' } },
   { option: 'Cars', style: { backgroundColor: 'blue', textColor: 'white' } },
-  { option: '3', style: { backgroundColor: 'brown', textColor: 'white' } },
-  { option: '4', style: { backgroundColor: 'orange', textColor: 'white' } },
-  { option: '5', style: { backgroundColor: 'grey', textColor: 'white' } },
+  { option: 'Movies', style: { backgroundColor: 'brown', textColor: 'white' } },
+  { option: 'Literature', style: { backgroundColor: 'orange', textColor: 'white' } },
+  { option: 'Solar System', style: { backgroundColor: 'grey', textColor: 'white' } },
 ]
 
 const useStyles = makeStyles((theme) => ({
