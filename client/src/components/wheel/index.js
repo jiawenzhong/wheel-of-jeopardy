@@ -1,14 +1,15 @@
-import { Button, makeStyles } from '@material-ui/core';
-import React, { useState } from 'react';
+import { Button, makeStyles, Typography } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { Wheel } from 'react-custom-roulette'
+import { getSelectedCategories, getPlayer } from '../../api/game';
 
-const data = [
-  { option: 'Animal', style: { backgroundColor: 'green', textColor: 'white' } },
-  { option: 'Sport', style: { backgroundColor: 'red', textColor: 'white' } },
-  { option: 'Cars', style: { backgroundColor: 'blue', textColor: 'white' } },
-  { option: 'Movies', style: { backgroundColor: 'brown', textColor: 'white' } },
-  { option: 'Literature', style: { backgroundColor: 'orange', textColor: 'white' } },
-  { option: 'Solar System', style: { backgroundColor: 'grey', textColor: 'white' } },
+const dataOptions = [
+  { style: { backgroundColor: 'green', textColor: 'white' } },
+  { style: { backgroundColor: 'red', textColor: 'white' } },
+  { style: { backgroundColor: 'blue', textColor: 'white' } },
+  { style: { backgroundColor: 'brown', textColor: 'white' } },
+  { style: { backgroundColor: 'orange', textColor: 'white' } },
+  { style: { backgroundColor: 'grey', textColor: 'white' } },
 ]
 
 const useStyles = makeStyles((theme) => ({
@@ -26,6 +27,22 @@ const DecisionWheel = () => {
   const styles = useStyles();
   const [mustSpin, setMustSpin] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(0);
+  const [data, setData] = useState([]);
+  const [player, setPlayer] = useState();
+
+  useEffect(() => {
+    const categories = getSelectedCategories();
+    const combineData = categories.map(({ id, option }) => {
+      return { option, ...dataOptions[id] };
+    });
+    setData(combineData);
+  }, []);
+
+  useEffect(() => {
+    // TODO: save session ID when user login, then use session ID to get player
+    const result = getPlayer('112');
+    setPlayer(result);
+  }, []);
 
   const handleSpinClick = () => {
     const newPrizeNumber = Math.floor(Math.random() * data.length);
@@ -35,6 +52,11 @@ const DecisionWheel = () => {
   }
   return (
     <>
+      <div>
+        <Typography variant="h3">Player: {player.name}</Typography>
+        <Typography variant="h3">Score: {player.score}</Typography>
+      </div>
+      <br />
       <div className={styles.wheel}>
         <Wheel
           mustStartSpinning={mustSpin}
