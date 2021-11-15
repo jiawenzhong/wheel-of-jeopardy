@@ -10,6 +10,7 @@
     "clsx": "^1.1.1",
     "history": "^5.1.0",
     "react": "^16.13.1",
+    "react-bootstrap-validation": "^0.1.11",
     "react-custom-roulette": "^1.1.8",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",

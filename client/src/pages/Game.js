@@ -7,6 +7,8 @@ const useStyles = makeStyles((theme) => ({
   root: {},
 }));
 
+document.body.style = 'background: orange;';
+
 const Game = () => {
   const styles = useStyles();
   return (
