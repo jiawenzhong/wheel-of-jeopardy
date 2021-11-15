@@ -1,15 +1,9 @@
 import { Button, makeStyles } from '@material-ui/core';
 import React, { useState } from 'react';
-import { Wheel } from 'react-custom-roulette'
-
-const data = [
-  { option: 'Animal', style: { backgroundColor: 'green', textColor: 'white' } },
-  { option: 'Sport', style: { backgroundColor: 'red', textColor: 'white' } },
-  { option: 'Cars', style: { backgroundColor: 'blue', textColor: 'white' } },
-  { option: 'Movies', style: { backgroundColor: 'brown', textColor: 'white' } },
-  { option: 'Literature', style: { backgroundColor: 'orange', textColor: 'white' } },
-  { option: 'Solar System', style: { backgroundColor: 'grey', textColor: 'white' } },
-]
+import { Wheel } from 'react-custom-roulette';
+import history from '../../utils/History';
+import * as ROUTES from '../../constants';
+import { generatePath } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   wheel: {
@@ -22,16 +16,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DecisionWheel = () => {
+const DecisionWheel = ({ data }) => {
   const styles = useStyles();
   const [mustSpin, setMustSpin] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(0);
 
   const handleSpinClick = () => {
-    const newPrizeNumber = Math.floor(Math.random() * data.length);
-    setSelectedCategory(newPrizeNumber);
+    const randomCategory = Math.floor(Math.random() * data.length);
+    setSelectedCategory(randomCategory);
     setMustSpin(true);
-    console.log(newPrizeNumber, data[newPrizeNumber].option);
+    console.log(randomCategory, data[randomCategory].option);
+  }
+
+  const handleRedirect = () => {
+    history.push(generatePath(ROUTES.SELECT_QUESTION, { categoryId: selectedCategory }))
   }
   return (
     <>
@@ -43,7 +41,8 @@ const DecisionWheel = () => {
           backgroundColors={['#3e3e3e', '#df3428']}
           textColors={['#ffffff']}
           onStopSpinning={() => {
-            setMustSpin(false)
+            setMustSpin(false);
+            handleRedirect();
           }}
         />
       </div>
