@@ -1,16 +1,9 @@
-import { Button, makeStyles, Typography } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
-import { Wheel } from 'react-custom-roulette'
-import { getSelectedCategories, getPlayer } from '../../api/game';
-
-const dataOptions = [
-  { style: { backgroundColor: 'green', textColor: 'white' } },
-  { style: { backgroundColor: 'red', textColor: 'white' } },
-  { style: { backgroundColor: 'blue', textColor: 'white' } },
-  { style: { backgroundColor: 'brown', textColor: 'white' } },
-  { style: { backgroundColor: 'orange', textColor: 'white' } },
-  { style: { backgroundColor: 'grey', textColor: 'white' } },
-]
+import { Button, makeStyles } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Wheel } from 'react-custom-roulette';
+import history from '../../utils/History';
+import * as ROUTES from '../../constants';
+import { generatePath } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   wheel: {
@@ -23,40 +16,23 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DecisionWheel = () => {
+const DecisionWheel = ({ data }) => {
   const styles = useStyles();
   const [mustSpin, setMustSpin] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(0);
-  const [data, setData] = useState([]);
-  const [player, setPlayer] = useState();
-
-  useEffect(() => {
-    const categories = getSelectedCategories();
-    const combineData = categories.map(({ id, option }) => {
-      return { option, ...dataOptions[id] };
-    });
-    setData(combineData);
-  }, []);
-
-  useEffect(() => {
-    // TODO: save session ID when user login, then use session ID to get player
-    const result = getPlayer('112');
-    setPlayer(result);
-  }, []);
 
   const handleSpinClick = () => {
-    const newPrizeNumber = Math.floor(Math.random() * data.length);
-    setSelectedCategory(newPrizeNumber);
+    const randomCategory = Math.floor(Math.random() * data.length);
+    setSelectedCategory(randomCategory);
     setMustSpin(true);
-    console.log(newPrizeNumber, data[newPrizeNumber].option);
+    console.log(randomCategory, data[randomCategory].option);
+  }
+
+  const handleRedirect = () => {
+    history.push(generatePath(ROUTES.SELECT_QUESTION, { categoryId: selectedCategory }))
   }
   return (
     <>
-      <div>
-        <Typography variant="h3">Player: {player.name}</Typography>
-        <Typography variant="h3">Score: {player.score}</Typography>
-      </div>
-      <br />
       <div className={styles.wheel}>
         <Wheel
           mustStartSpinning={mustSpin}
@@ -65,7 +41,8 @@ const DecisionWheel = () => {
           backgroundColors={['#3e3e3e', '#df3428']}
           textColors={['#ffffff']}
           onStopSpinning={() => {
-            setMustSpin(false)
+            setMustSpin(false);
+            handleRedirect();
           }}
         />
       </div>

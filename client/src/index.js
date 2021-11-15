@@ -4,12 +4,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Router, Route, Switch } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import history from './utils/History';
 import * as ROUTES from './constants';
 import * as Screens from './pages';
 
-const history = createBrowserHistory();
-
+window.localStorage.setItem('score', 0);
 ReactDOM.render(
   <Router history={history}>
     <React.StrictMode>
@@ -20,6 +19,12 @@ ReactDOM.render(
         </Route>
         <Route exact path={ROUTES.GAME}>
           <Screens.Game />
+        </Route>
+        <Route exact path={ROUTES.SETUP}>
+          <Screens.PreGame />
+        </Route>
+        <Route exact path={ROUTES.SELECT_QUESTION}>
+          <Screens.SelectQuestion />
         </Route>
         </Switch>
       </App>
