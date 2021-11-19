@@ -3,6 +3,8 @@ import  '../App.css';
 import React from 'react';
 import StartButton from '../components/start-button';
 import logo from '../assets/loading.gif'
+import SoundPlayer from '../components/soundplayer';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -17,10 +19,10 @@ const Home = () => {
       <h1> Please wait for players to join...</h1>
       <img src={logo} alt="loading..." />
       <StartButton />
+      <SoundPlayer/>
     </Container>
   );
 }
-
 
 
 export default Home;
