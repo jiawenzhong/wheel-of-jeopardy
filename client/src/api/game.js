@@ -2,16 +2,33 @@ import axios from 'axios';
 
 const api_url = process.env.REACT_APP_API_URL;
 
-export const getSelectedCategories = () => {
-  // const result = axios.get('/getCategories');
+export const getSelectedCategories = async (categoryId) => {
+  // try {
+  //   const url = api_url + `category/${categoryId}`;
+  //   const result = await axios.get(url);
+  //   return result.data.extend.category;
+  // } catch (e) {
+  //   return Error;
+  // }
+
   return [
-    { id: 1, option: 'Animal' },
-    { id: 2, option: 'Sport' },
-    { id: 3, option: 'Cars' },
-    { id: 4, option: 'History' },
-    { id: 5, option: 'Movies' },
-    { id: 6, option: 'Literature' },
+    { categorieid: 1, categoryname: 'Animal' },
+    { categorieid: 2, categoryname: 'Sport' },
+    { categorieid: 3, categoryname: 'Cars' },
+    { categorieid: 4, categoryname: 'History' },
+    { categorieid: 5, categoryname: 'Movies' },
+    { categorieid: 6, categoryname: 'Literature' },
   ]
+}
+
+export const sendSelectedCategories = async (categoties) => {
+  try {
+    const url = api_url + 'category';
+    const result = await axios.post(url, categoties);
+    return result;
+  } catch (e) {
+    throw Error;
+  }
 }
 
 export const getPlayer = (sessionId) => {
@@ -23,21 +40,15 @@ export const getPlayer = (sessionId) => {
   };
 }
 
-export const getAllCategories = () => {
-  return [
-    { id: 1, option: 'Animal' },
-    { id: 2, option: 'Sport' },
-    { id: 3, option: 'Cars' },
-    { id: 4, option: 'History' },
-    { id: 5, option: 'Movies' },
-    { id: 6, option: 'Literature' },
-    { id: 7, option: 'Solar System' },
-    { id: 8, option: 'Music' },
-  ];
-}
-
-export const sendSelectedCategories = (selectedOptions, player) => {
-  console.log(selectedOptions, player);
+export const getAllCategories = async () => {
+  try {
+    const url = api_url + 'category';
+    const result = await axios.get(url);
+    console.log('getAllCategories', result);
+    return result.data.extend.category;
+  } catch (e) {
+    return Error;
+  }
 }
 
 export const getQuestionsByCategory = async (categoryId) => {

@@ -24,11 +24,18 @@ const Game = () => {
   const styles = useStyles();
 
   useEffect(() => {
-    const categories = getSelectedCategories();
-    const combineData = categories.map(({ id, option }) => {
-      return { option, ...dataOptions[id] };
-    });
-    setData(combineData);
+    async function getCategories () {
+      try {
+        const categories = await getSelectedCategories();
+        const combineData = categories.map(({ categorieid, categoryname }) => {
+          return { option: categoryname, ...dataOptions[categorieid - 1] };
+        });
+        setData(combineData);
+      } catch (e) {
+        throw Error;
+      }
+    }
+    getCategories();
   }, []);
 
   useEffect(() => {

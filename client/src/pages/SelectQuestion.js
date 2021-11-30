@@ -58,8 +58,8 @@ const SelectQuestion = (props) => {
     async function getQuestions() {
       try {
         const results = await getQuestionsByCategory(categoryId);
+        console.log('front', results);
         setQuestions(results);
-        console.log(results);
       } catch (error) {
         throw Error;
       }
