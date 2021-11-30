@@ -10,6 +10,9 @@ In the project directory, you can run:
 
 ### `pages route`
 /pages/Home.js - HOME = '/';
+
 /pages/Game.js - GAME = '/in-game/:sessionId';
+
 /pages/PreGame.js - SETUP = '/setup';
+
 /pages/SelectedQuestion.js - SELECT_QUESTION = '/select-question/:categoryId';
