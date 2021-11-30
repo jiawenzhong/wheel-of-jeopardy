@@ -41,7 +41,8 @@ const SelectQuestion = (props) => {
 
   const handleAnswerSubmit = async () => {
     try {
-      const isCorrect = await checkAnswer(selectedAnswer.answerid, selectedQuestion.questionid)
+      const isCorrect = await checkAnswer(selectedAnswer.answerid, selectedQuestion.questionid);
+      console.log(selectedAnswer.answerid, selectedQuestion.questionid);
       let currentScore = parseInt(window.localStorage.getItem('score'));
       if (isCorrect) {
         currentScore = currentScore + selectedQuestion.pointvalue;

@@ -1,5 +1,6 @@
 import { makeStyles, FormGroup, FormControlLabel, Checkbox, Typography, Button, Container } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { generatePath } from 'react-router';
 import { getAllCategories, sendSelectedCategories, getPlayer } from '../api/game';
 import * as ROUTES from '../constants';
 import history from '../utils/History';
@@ -46,7 +47,7 @@ const PreGame = () => {
     if (selectCategory.length === 6) {
       try {
         sendSelectedCategories(selectCategory, player);
-        history.push(ROUTES.GAME);
+        history.push(generatePath(ROUTES.GAME, { sessionId: 122 }) );
       } catch (error) {
         throw Error;
       }
