@@ -4,6 +4,7 @@ import BuzzButton from '../components/buzz-button';
 import DecisionWheel from '../components/wheel';
 import { getSelectedCategories, getPlayer } from '../api/game';
 import { Typography } from '@material-ui/core';
+import { TEMP_ID } from '../constants';
 
 const dataOptions = [
   { style: { backgroundColor: 'green', textColor: 'white' } },
@@ -28,12 +29,13 @@ const Game = () => {
   useEffect(() => {
     async function getCategories () {
       try {
-        const categories = await getSelectedCategories();
+        const categories = await getSelectedCategories(TEMP_ID);
         const combineData = categories.map(({ categorieid, categoryname }) => {
           return { option: categoryname, ...dataOptions[categorieid - 1] };
         });
         setData(combineData);
       } catch (e) {
+        console.log(e)
         throw Error;
       }
     }
