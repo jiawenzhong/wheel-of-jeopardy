@@ -1,29 +1,32 @@
+import { CATEGORY_STORAGE } from '../constants';
 import axios from 'axios';
 
 const api_url = process.env.REACT_APP_API_URL;
 
-export const getSelectedCategories = async (categoryId) => {
-  // try {
-  //   const url = api_url + `category/${categoryId}`;
-  //   const result = await axios.get(url);
-  //   return result.data.extend.category;
-  // } catch (e) {
-  //   return Error;
-  // }
-
-  return [
-    { categorieid: 1, categoryname: 'Animal' },
-    { categorieid: 2, categoryname: 'Sport' },
-    { categorieid: 3, categoryname: 'Cars' },
-    { categorieid: 4, categoryname: 'History' },
-    { categorieid: 5, categoryname: 'Movies' },
-    { categorieid: 6, categoryname: 'Literature' },
-  ]
+export const getSelectedCategories = async (gameId) => {
+  try {
+    const url = api_url + `game/getSelectedCategories?gameId=${gameId}`;
+    const result = await axios.get(url);
+    const ids = result.data.extend.categoriesIds;
+    const categoryStorage = JSON.parse(localStorage.getItem(CATEGORY_STORAGE));
+    console.log('here', categoryStorage);
+    const returnResult = ids.map((id) => {
+      console.log('ids', id);
+      return {
+        categorieid: id,
+        categoryname: categoryStorage.find(({ categorieid }) => id === categorieid).categoryname,
+      }
+    });
+    console.log('returnResult', returnResult);
+    return returnResult;
+  } catch (e) {
+    throw Error;
+  }
 }
 
-export const sendSelectedCategories = async (categoties) => {
+export const sendSelectedCategories = async (categoties, gameId) => {
   try {
-    const url = api_url + 'category';
+    const url = api_url + `game/selectCategories?gameId=${gameId}`;
     const result = await axios.post(url, categoties);
     return result;
   } catch (e) {
@@ -45,6 +48,7 @@ export const getAllCategories = async () => {
     const url = api_url + 'category';
     const result = await axios.get(url);
     console.log('getAllCategories', result);
+    localStorage.setItem(CATEGORY_STORAGE, JSON.stringify(result.data.extend.category));
     return result.data.extend.category;
   } catch (e) {
     return Error;

@@ -47,22 +47,17 @@ const PreGame = () => {
       }
     }
     setSelectCategory(categoryArray);
-    // try {
-    //   const sendResult = await sendSelectedCategories();
-    //   console.log('sendResult', sendResult);
-    // } catch (e) {
-    //   throw Error;
-    // }
-
     console.log(option, categoryArray);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(selectCategory)
     if (selectCategory.length === 6) {
       try {
-        sendSelectedCategories(selectCategory, player);
-        history.push(generatePath(ROUTES.GAME, { sessionId: 122 }) );
+        const sendResult = await sendSelectedCategories(selectCategory, ROUTES.TEMP_ID);
+        console.log('sendResult', sendResult);
+        // sendSelectedCategories(selectCategory, player);
+        history.push(generatePath(ROUTES.GAME, { sessionId: ROUTES.TEMP_ID }) );
       } catch (error) {
         throw Error;
       }
