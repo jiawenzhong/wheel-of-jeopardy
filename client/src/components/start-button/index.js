@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 
 const handleSubmit = () => {
   try {
-    history.push(ROUTES.GAME);
+    history.push(ROUTES.SETUP);
   } catch (error) {
     throw Error;
 }

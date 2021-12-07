@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Sound from 'react-sound';
 import bgsong from '../../assets/bgsong.mp3';
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"></link>
 
 
 
@@ -14,12 +13,7 @@ const SoundPlayer =  (
 
     return(
         <div>
-            <button onClick={() => setIsPlaying(!isPlaying)}>
-            <span class="material-icons">&#xE87C;</span>
-</button>
-<span class="material-icons-outlined">
-volume_up
-</span>
+            <button onClick={() => setIsPlaying(!isPlaying)}>Play</button>
         <Sound
             url={bgsong}
             playStatus={
