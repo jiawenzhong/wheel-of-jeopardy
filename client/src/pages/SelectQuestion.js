@@ -4,9 +4,13 @@ import { withRouter } from 'react-router';
 import { checkAnswer, getAnswerByQuestion, getQuestionsByCategory } from '../api/game';
 import * as ROUTES from '../constants';
 import History from '../utils/History';
+import { generatePath } from 'react-router';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
+  centerList: {
+    display: 'inline-block'
+  }
 }));
 
 const SelectQuestion = (props) => {
@@ -41,13 +45,14 @@ const SelectQuestion = (props) => {
 
   const handleAnswerSubmit = async () => {
     try {
-      const isCorrect = await checkAnswer(selectedAnswer.answerid, selectedQuestion.questionid)
+      const isCorrect = await checkAnswer(selectedAnswer.answerid, selectedQuestion.questionid);
+      console.log(selectedAnswer.answerid, selectedQuestion.questionid);
       let currentScore = parseInt(window.localStorage.getItem('score'));
       if (isCorrect) {
         currentScore = currentScore + selectedQuestion.pointvalue;
         window.localStorage.setItem('score', currentScore);
       }
-      History.push(ROUTES.GAME);
+      History.push(generatePath(ROUTES.GAME, { sessionId: ROUTES.TEMP_ID }));
     } catch (error) {
       throw Error;
     }
@@ -57,8 +62,8 @@ const SelectQuestion = (props) => {
     async function getQuestions() {
       try {
         const results = await getQuestionsByCategory(categoryId);
+        console.log('front', results);
         setQuestions(results);
-        console.log(results);
       } catch (error) {
         throw Error;
       }
@@ -70,7 +75,7 @@ const SelectQuestion = (props) => {
     <Container className={styles.root}>
       <Typography variant="h5">Please select 1 from below:</Typography>
       {questions.length > 0 && !canContinue ? (
-        <div>
+        <div className={styles.centerList}>
           <FormGroup>
             {questions.map((q) => {
               return (
@@ -88,13 +93,15 @@ const SelectQuestion = (props) => {
             <>
               <Typography variant="h5">{selectedQuestion.question}</Typography>
               <br />
-              <FormGroup>
-                {answerOptions && answerOptions.map((a) => {
-                  return (
-                    <FormControlLabel key={a.answerid} className={styles.formControl} control={<Checkbox />} label={`${a.answerchoices}`} onChange={() => handleAnswerSelected(a)}/>
-                  )
-                })}
-              </FormGroup>
+              <div  className={styles.centerList}>
+                <FormGroup>
+                  {answerOptions && answerOptions.map((a) => {
+                    return (
+                      <FormControlLabel key={a.answerid} className={styles.formControl} control={<Checkbox />} label={`${a.answerchoices}`} onChange={() => handleAnswerSelected(a)}/>
+                    )
+                  })}
+                </FormGroup>
+              </div>
               <br />
               <Button variant="contained" onClick={() => handleAnswerSubmit()}>Answer</Button>
             </>

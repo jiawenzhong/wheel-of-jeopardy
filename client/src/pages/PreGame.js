@@ -1,5 +1,6 @@
 import { makeStyles, FormGroup, FormControlLabel, Checkbox, Typography, Button, Container } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
+import { generatePath } from 'react-router';
 import { getAllCategories, sendSelectedCategories, getPlayer } from '../api/game';
 import * as ROUTES from '../constants';
 import history from '../utils/History';
@@ -20,13 +21,21 @@ const PreGame = () => {
   const [player, setPlayer] = useState();
 
   useEffect(() => {
-    const result = getAllCategories();
-    setAllCategories(result);
+    async function getCateories() {
+      try {
+        const result = await getAllCategories();
+        console.log('front', result);
+        setAllCategories(result);
+      } catch (error) {
+        throw Error;
+      }
+    }
+    getCateories();
     const playerResult =  getPlayer('112');
     setPlayer(playerResult);
   }, []);
 
-  const handleChange = (option, isChecked) => {
+  const handleChange = async (option, isChecked) => {
     const categoryArray = selectCategory;
     if (isChecked && !categoryArray.includes(option)) {
       categoryArray.push(option);
@@ -41,12 +50,14 @@ const PreGame = () => {
     console.log(option, categoryArray);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log(selectCategory)
     if (selectCategory.length === 6) {
       try {
-        sendSelectedCategories(selectCategory, player);
-        history.push(ROUTES.GAME);
+        const sendResult = await sendSelectedCategories(selectCategory, ROUTES.TEMP_ID);
+        console.log('sendResult', sendResult);
+        // sendSelectedCategories(selectCategory, player);
+        history.push(generatePath(ROUTES.GAME, { sessionId: ROUTES.TEMP_ID }) );
       } catch (error) {
         throw Error;
       }
@@ -60,9 +71,9 @@ const PreGame = () => {
           <Typography variant='h4'>Please choose 6 from the following categories below:</Typography>
           <br/>
           <FormGroup>
-            {allCategories.map(({ id, option }) => {
+            {allCategories.map(({ categorieid, categoryname }) => {
               return (
-                <FormControlLabel key={id} className={styles.formControl} control={<Checkbox />} label={option} onChange={(event) => handleChange(id, event.target.checked)}/>
+                <FormControlLabel key={categorieid} className={styles.formControl} control={<Checkbox />} label={categoryname} onChange={(event) => handleChange(categorieid, event.target.checked)}/>
               )
             })}
           </FormGroup>

@@ -1,17 +1,37 @@
+import { CATEGORY_STORAGE } from '../constants';
 import axios from 'axios';
 
 const api_url = process.env.REACT_APP_API_URL;
 
-export const getSelectedCategories = () => {
-  // const result = axios.get('/getCategories');
-  return [
-    { id: 1, option: 'Animal' },
-    { id: 2, option: 'Sport' },
-    { id: 3, option: 'Cars' },
-    { id: 4, option: 'History' },
-    { id: 5, option: 'Movies' },
-    { id: 6, option: 'Literature' },
-  ]
+export const getSelectedCategories = async (gameId) => {
+  try {
+    const url = api_url + `game/getSelectedCategories?gameId=${gameId}`;
+    const result = await axios.get(url);
+    const ids = result.data.extend.categoriesIds;
+    const categoryStorage = JSON.parse(localStorage.getItem(CATEGORY_STORAGE));
+    console.log('here', categoryStorage);
+    const returnResult = ids.map((id) => {
+      console.log('ids', id);
+      return {
+        categorieid: id,
+        categoryname: categoryStorage.find(({ categorieid }) => id === categorieid).categoryname,
+      }
+    });
+    console.log('returnResult', returnResult);
+    return returnResult;
+  } catch (e) {
+    throw Error;
+  }
+}
+
+export const sendSelectedCategories = async (categoties, gameId) => {
+  try {
+    const url = api_url + `game/selectCategories?gameId=${gameId}`;
+    const result = await axios.post(url, categoties);
+    return result;
+  } catch (e) {
+    throw Error;
+  }
 }
 
 export const getPlayer = (sessionId) => {
@@ -23,21 +43,16 @@ export const getPlayer = (sessionId) => {
   };
 } 
 
-export const getAllCategories = () => {
-  return [
-    { id: 1, option: 'Animal' },
-    { id: 2, option: 'Sport' },
-    { id: 3, option: 'Cars' },
-    { id: 4, option: 'History' },
-    { id: 5, option: 'Movies' },
-    { id: 6, option: 'Literature' },
-    { id: 7, option: 'Solar System' },
-    { id: 8, option: 'Music' },
-  ];
-}
-
-export const sendSelectedCategories = (selectedOptions, player) => {
-  console.log(selectedOptions, player);
+export const getAllCategories = async () => {
+  try {
+    const url = api_url + 'category';
+    const result = await axios.get(url);
+    console.log('getAllCategories', result);
+    localStorage.setItem(CATEGORY_STORAGE, JSON.stringify(result.data.extend.category));
+    return result.data.extend.category;
+  } catch (e) {
+    return Error;
+  }
 }
 
 export const getQuestionsByCategory = async (categoryId) => {
