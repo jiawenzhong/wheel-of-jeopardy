@@ -4,7 +4,6 @@ import BuzzButton from '../components/buzz-button';
 import DecisionWheel from '../components/wheel';
 import { getSelectedCategories, getPlayer } from '../api/game';
 import { Typography } from '@material-ui/core';
-import ScoreBoard from '../components/scoreboard';
 
 const dataOptions = [
   { style: { backgroundColor: 'green', textColor: 'white' } },
