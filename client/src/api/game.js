@@ -41,7 +41,7 @@ export const getPlayer = (sessionId) => {
     name: 'Player 1',
     score: 0,
   };
-}
+} 
 
 export const getAllCategories = async () => {
   try {

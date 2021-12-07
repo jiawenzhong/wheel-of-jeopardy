@@ -48,6 +48,7 @@ const Game = () => {
     setPlayer(result);
   }, []);
   return (
+    
     <Container className={styles.root}>
       {player && (
         <div>
