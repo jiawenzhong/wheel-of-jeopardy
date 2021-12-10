@@ -1,10 +1,9 @@
-import { makeStyles,TextField, Container,Button} from '@material-ui/core';
+import { makeStyles,TextField, Container} from '@material-ui/core';
 import { Stack } from '@mui/material';
 import  '../App.css';
 import React from 'react';
 import StartButton from '../components/start-button';
 import logo from '../assets/loading.gif'
-import Menu from '../components/menudial';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -19,19 +18,18 @@ const Home = () => {
   return (
     
     <Container className={styles.root}>
-      <h1> Wheel of Jepordy!</h1>
+      <h1> Welcom to Wheel of Jepordy!</h1>
       <h1> Enter your username below</h1>
 
       <Container className={styles.root} maxWidth="sm">
       
       <Stack spacing={2}>
       <TextField id="outlined-basic" label="Username" variant="outlined" color="primary" />
-      <Button   variant="contained" size="small" color="Secondary" >Submit</Button>
-      <img src={logo} alt="loading..."/>
+      <TextField id="outlined-basic" label="Session id" variant="outlined" color="primary" />
       <StartButton/>
+      <img src={logo} alt="loading..."/>
       </Stack>
       </Container>
-      <Menu/>
       </Container>
 
   );
