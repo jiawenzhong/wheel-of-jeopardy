@@ -8,11 +8,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const BuzzButton = () => {
+const BuzzButton = ({ handleBuzzin }) => {
   const styles = useStyles();
+
   return (
     <Container className={styles.root}>
-      <Button className={styles.buzzBtn} variant="contained" size="large">BUZZ IN</Button>
+      <Button 
+        className={styles.buzzBtn} 
+        variant="contained" 
+        size="large"
+        onClick={handleBuzzin}
+      >BUZZ IN</Button>
     </Container>
   );
 };

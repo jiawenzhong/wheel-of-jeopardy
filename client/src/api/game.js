@@ -84,3 +84,21 @@ export const checkAnswer = async (answerId, questionId) => {
     return error;
   }
 }
+
+export const gamePlay = async (login, score, gameId) => {
+  const url = api_url + `game/gameplay/?gameId=${gameId}`;
+  const postObject = {
+    player: {login},
+    scoreEarned: score,
+    gameId
+  }
+  console.log(postObject)
+  try {
+    const result = await axios.post(url, postObject);
+    console.log(result)
+
+    return result.data;
+  } catch (error) {
+    return error;
+  }
+}

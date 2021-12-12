@@ -2,9 +2,9 @@ import { makeStyles, Container } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import BuzzButton from '../components/buzz-button';
 import DecisionWheel from '../components/wheel';
-import { getSelectedCategories, getPlayer } from '../api/game';
+import { getSelectedCategories, getPlayer, gamePlay } from '../api/game';
 import { Typography } from '@material-ui/core';
-import { TEMP_ID } from '../constants';
+import { GAME_FINISH_MESSAGE, LATE_MESSAGE, TEMP_ID } from '../constants';
 
 const dataOptions = [
   { style: { backgroundColor: 'green', textColor: 'white' } },
@@ -25,6 +25,24 @@ const Game = () => {
   const [data, setData] = useState([]);
   const [player, setPlayer] = useState();
   const styles = useStyles();
+
+  const handleBuzzin = async () => {
+    try {
+      const login = window.localStorage.getItem('login');
+      const score = window.localStorage.getItem('score');
+      const gameId = window.localStorage.getItem('gameId');
+      const playGame = await gamePlay(login, parseInt(score), gameId);
+      if (playGame.msg === GAME_FINISH_MESSAGE) {
+        window.alert(GAME_FINISH_MESSAGE)
+      }
+      if (playGame.msg === LATE_MESSAGE) {
+        window.alert(LATE_MESSAGE);
+      }
+      console.log('playGame', playGame)
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   useEffect(() => {
     async function getCategories () {
@@ -58,7 +76,7 @@ const Game = () => {
       )}
       <br />
       <DecisionWheel data={data}/>
-      <BuzzButton />
+      <BuzzButton handleBuzzin={handleBuzzin} />
     </Container>
   );
 };

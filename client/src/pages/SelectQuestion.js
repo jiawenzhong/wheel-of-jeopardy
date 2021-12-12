@@ -51,6 +51,9 @@ const SelectQuestion = (props) => {
       if (isCorrect) {
         currentScore = currentScore + selectedQuestion.pointvalue;
         window.localStorage.setItem('score', currentScore);
+        window.alert(`Correct! You earned ${selectedQuestion.pointvalue}.`);
+      } else {
+        window.alert('Sorry wrong answer');
       }
       History.push(generatePath(ROUTES.GAME, { sessionId: ROUTES.TEMP_ID }));
     } catch (error) {
