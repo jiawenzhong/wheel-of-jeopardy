@@ -1,10 +1,11 @@
 import { makeStyles, Container, FormGroup, FormControlLabel, Checkbox, Typography, Button } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
-import { checkAnswer, getAnswerByQuestion, getQuestionsByCategory } from '../api/game';
+import { buzzIn, buzzRelease, checkAnswer, gamePlay, getAnswerByQuestion, getPlayer, getQuestionsByCategory } from '../api/game';
 import * as ROUTES from '../constants';
 import History from '../utils/History';
 import { generatePath } from 'react-router';
+import BuzzButton from '../components/buzz-button';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -15,13 +16,17 @@ const useStyles = makeStyles((theme) => ({
 
 const SelectQuestion = (props) => {
   const styles = useStyles();
+  const [canAnswer, setCanAnswer] = useState(false);
   // const { categoryId } = useParams();
   const categoryId = props.match.params.categoryId;
   const [questions, setQuestions] = useState([]);
   const [canContinue, setContinue] = useState(false);
+  const [canRelease, setCanRelease] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState();
   const [answerOptions, setAnswerOptions] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState([]);
+  const login = getPlayer().login;
+  const gameId = window.localStorage.getItem(ROUTES.GAMEID_STORAGE);
 
   const handleChange = (question) => {
     setSelectedQuestion(question);
@@ -43,21 +48,63 @@ const SelectQuestion = (props) => {
     setSelectedAnswer(answer);
   }
 
+  const handleBuzzin = async () => {
+    try {
+      // const score = window.localStorage.getItem(ROUTES.SCORE_STORAGE);
+      const playGame = await buzzIn(login, gameId);
+      if (playGame.msg === ROUTES.NOT_ENOUGH_PLAYER_MESSAGE) {
+        window.alert(ROUTES.NOT_ENOUGH_PLAYER_MESSAGE)
+      }
+      if (playGame.msg === ROUTES.GAME_FINISH_MESSAGE) {
+        window.alert(ROUTES.GAME_FINISH_MESSAGE)
+      }
+      if (playGame.msg === ROUTES.LATE_MESSAGE) {
+        window.alert(ROUTES.LATE_MESSAGE);
+      }
+      checkIfCanAnswer(playGame.players)
+      console.log('playGame', playGame)
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  const handleGamePlay = async (currentScore) => {
+    await gamePlay(login, currentScore, gameId);
+  }
+
   const handleAnswerSubmit = async () => {
     try {
       const isCorrect = await checkAnswer(selectedAnswer.answerid, selectedQuestion.questionid);
       console.log(selectedAnswer.answerid, selectedQuestion.questionid);
-      let currentScore = parseInt(window.localStorage.getItem('score'));
+      let currentScore = parseInt(window.localStorage.getItem(ROUTES.SCORE_STORAGE));
       if (isCorrect) {
         currentScore = currentScore + selectedQuestion.pointvalue;
-        window.localStorage.setItem('score', currentScore);
+        window.localStorage.setItem(ROUTES.SCORE_STORAGE, currentScore);
         window.alert(`Correct! You earned ${selectedQuestion.pointvalue}.`);
+        await handleGamePlay(currentScore)
       } else {
         window.alert('Sorry wrong answer');
       }
-      History.push(generatePath(ROUTES.GAME, { sessionId: ROUTES.TEMP_ID }));
+      setCanRelease(true);
     } catch (error) {
       throw Error;
+    }
+  }
+
+  const checkIfCanAnswer = (players) => {
+    setCanAnswer(players.find((player) => player.login === login).buzzStatus === 'BUZZED');
+  }
+
+  const handleReleaseBuzz = async () => {
+    try {
+      const game = await buzzRelease(gameId);
+      if (game.status === ROUTES.GAME_STATUS.FINISHED) {
+        window.alert(`Congratuation the winner is ${game.winner}`)
+      } else {
+        History.push(generatePath(ROUTES.GAME, { sessionId: ROUTES.SESSION_ID }));
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -100,13 +147,17 @@ const SelectQuestion = (props) => {
                 <FormGroup>
                   {answerOptions && answerOptions.map((a) => {
                     return (
-                      <FormControlLabel key={a.answerid} className={styles.formControl} control={<Checkbox />} label={`${a.answerchoices}`} onChange={() => handleAnswerSelected(a)}/>
+                      <FormControlLabel disabled={!canAnswer} key={a.answerid} className={styles.formControl} control={<Checkbox />} label={`${a.answerchoices}`} onChange={() => handleAnswerSelected(a)}/>
                     )
                   })}
                 </FormGroup>
               </div>
               <br />
-              <Button variant="contained" onClick={() => handleAnswerSubmit()}>Answer</Button>
+              <BuzzButton handleBuzzin={handleBuzzin} />
+              <br />
+              {canAnswer && <Button variant="contained" onClick={() => handleAnswerSubmit()}>Answer</Button>}
+              <br />
+              {canRelease && <Button variant="contained" onClick={() => handleReleaseBuzz()}>Continue</Button>}
             </>
           )}
         </div>

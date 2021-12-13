@@ -1,4 +1,4 @@
-import { CATEGORY_STORAGE } from '../constants';
+import { CATEGORY_STORAGE, GAMEID_STORAGE, LOGIN_STORAGE, SCORE_STORAGE } from '../constants';
 import axios from 'axios';
 
 const api_url = process.env.REACT_APP_API_URL;
@@ -9,7 +9,7 @@ export const getSelectedCategories = async (gameId) => {
     const result = await axios.get(url);
     const ids = result.data.extend.categoriesIds;
     const categoryStorage = JSON.parse(localStorage.getItem(CATEGORY_STORAGE));
-    console.log('here', categoryStorage);
+    console.log('here', result, categoryStorage);
     const returnResult = ids.map((id) => {
       console.log('ids', id);
       return {
@@ -34,14 +34,12 @@ export const sendSelectedCategories = async (categoties, gameId) => {
   }
 }
 
-export const getPlayer = (sessionId) => {
+export const getPlayer = () => {
   return {
-    id: 1,
-    sessionId: '112',
-    name: 'Player 1',
-    score: 0,
+    login: window.localStorage.getItem(LOGIN_STORAGE),
+    score: window.localStorage.getItem(SCORE_STORAGE)
   };
-} 
+}
 
 export const getAllCategories = async () => {
   try {
@@ -97,7 +95,69 @@ export const gamePlay = async (login, score, gameId) => {
     const result = await axios.post(url, postObject);
     console.log(result)
 
+    return result.data.extend;
+  } catch (error) {
+    return error;
+  }
+}
+
+export const gameStart = async (login) => {
+  const url = api_url + `game/start/`;
+  try {
+    const result = await axios.post(url, { login });
+    window.localStorage.setItem(LOGIN_STORAGE, login);
+    return result.data.extend.game.gameId;
+  } catch (error) {
+    return error;
+  }
+}
+
+export const gameConnect = async (login, gameId) => {
+  const url = api_url + `game/connect?gameId=${gameId}`;
+  
+  window.localStorage.setItem(GAMEID_STORAGE, gameId);
+  window.localStorage.setItem(LOGIN_STORAGE, login);
+  try {
+    const result = await axios.post(url, { login });
+    console.log('gameStart', result);
     return result.data;
+  } catch (error) {
+    return error;
+  }
+}
+
+export const buzzIn = async (login, gameId) => {
+  const url = api_url + `game/buzz?gameId=${gameId}`;
+  try {
+    const result = await axios.post(url, { login });
+    console.log('buzzin', result);
+    if (!result.data.extend.game) {
+      return { msg: result.data.msg };
+    } else {
+      const game = result.data.extend.game;
+      const players = !!game ? [game.player1, game.player2, game.player3] : [];
+      return { players };
+    }
+  } catch (error) {
+    return error;
+  }
+}
+
+export const getBuzzed = async (login, gameId) => {
+  const url = api_url + `game/getBuzzed?gameId=${gameId}`;
+  try {
+    const result = await axios.post(url, { login });
+    return result.data.extend.player;
+  } catch (error) {
+    return error;
+  }
+}
+
+export const buzzRelease = async (gameId) => {
+  const url = api_url + `game/buzzRelease?gameId=${gameId}`;
+  try {
+    const result = await axios.get(url);
+    return result.data.extend.game;
   } catch (error) {
     return error;
   }

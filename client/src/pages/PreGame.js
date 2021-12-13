@@ -31,7 +31,7 @@ const PreGame = () => {
       }
     }
     getCateories();
-    const playerResult =  getPlayer('112');
+    const playerResult =  getPlayer();
     setPlayer(playerResult);
   }, []);
 
@@ -54,10 +54,10 @@ const PreGame = () => {
     console.log(selectCategory)
     if (selectCategory.length === 6) {
       try {
-        const sendResult = await sendSelectedCategories(selectCategory, ROUTES.TEMP_ID);
+        const sendResult = await sendSelectedCategories(selectCategory, ROUTES.SESSION_ID);
         console.log('sendResult', sendResult);
         // sendSelectedCategories(selectCategory, player);
-        history.push(generatePath(ROUTES.GAME, { sessionId: ROUTES.TEMP_ID }) );
+        history.push(generatePath(ROUTES.GAME, { sessionId: ROUTES.SESSION_ID }) );
       } catch (error) {
         throw Error;
       }

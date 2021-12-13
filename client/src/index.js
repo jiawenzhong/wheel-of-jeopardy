@@ -8,7 +8,7 @@ import history from './utils/History';
 import * as ROUTES from './constants';
 import * as Screens from './pages';
 
-window.localStorage.setItem('score', 0);
+window.localStorage.setItem(ROUTES.SCORE_STORAGE, 0);
 ReactDOM.render(
   <Router history={history}>
     <React.StrictMode>
