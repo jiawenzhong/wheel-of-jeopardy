@@ -146,8 +146,13 @@ export const buzzIn = async (login, gameId) => {
 export const getBuzzed = async (login, gameId) => {
   const url = api_url + `game/getBuzzed?gameId=${gameId}`;
   try {
-    const result = await axios.post(url, { login });
-    return result.data.extend.player;
+    const result = await axios.get(url);
+    console.log('getBuzzed', result);
+    if (result.data.extend) {
+      return { player: result.data.extend.player };
+    } else {
+      return { msg: result.data.msg };
+    }
   } catch (error) {
     return error;
   }

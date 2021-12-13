@@ -1,7 +1,7 @@
 import { makeStyles, Container, FormGroup, FormControlLabel, Checkbox, Typography, Button } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router';
-import { buzzIn, buzzRelease, checkAnswer, gamePlay, getAnswerByQuestion, getPlayer, getQuestionsByCategory } from '../api/game';
+import { buzzIn, buzzRelease, checkAnswer, gamePlay, getAnswerByQuestion, getBuzzed, getPlayer, getQuestionsByCategory } from '../api/game';
 import * as ROUTES from '../constants';
 import History from '../utils/History';
 import { generatePath } from 'react-router';
@@ -22,6 +22,7 @@ const SelectQuestion = (props) => {
   const [questions, setQuestions] = useState([]);
   const [canContinue, setContinue] = useState(false);
   const [canRelease, setCanRelease] = useState(false);
+  const [canBuzzIn, setCanBuzzIn] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState();
   const [answerOptions, setAnswerOptions] = useState([]);
   const [selectedAnswer, setSelectedAnswer] = useState([]);
@@ -44,13 +45,24 @@ const SelectQuestion = (props) => {
     }
   }
 
-  const handleAnswerSelected = async (answer) => {
+  const handleAnswerSelected = (answer) => {
     setSelectedAnswer(answer);
+  }
+
+  const checkBuzzed = async () => {
+    try {
+      const result = await getBuzzed(login, gameId);
+      if (result.player) {
+        setCanAnswer(result.player.login === login);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   const handleBuzzin = async () => {
     try {
-      // const score = window.localStorage.getItem(ROUTES.SCORE_STORAGE);
+
       const playGame = await buzzIn(login, gameId);
       if (playGame.msg === ROUTES.NOT_ENOUGH_PLAYER_MESSAGE) {
         window.alert(ROUTES.NOT_ENOUGH_PLAYER_MESSAGE)
@@ -61,7 +73,8 @@ const SelectQuestion = (props) => {
       if (playGame.msg === ROUTES.LATE_MESSAGE) {
         window.alert(ROUTES.LATE_MESSAGE);
       }
-      checkIfCanAnswer(playGame.players)
+      // checkIfCanAnswer(playGame.players)
+      await checkBuzzed();
       console.log('playGame', playGame)
     } catch (e) {
       console.log(e);
@@ -86,14 +99,16 @@ const SelectQuestion = (props) => {
         window.alert('Sorry wrong answer');
       }
       setCanRelease(true);
+      setCanAnswer(false);
+      setCanBuzzIn(false);
     } catch (error) {
       throw Error;
     }
   }
 
-  const checkIfCanAnswer = (players) => {
-    setCanAnswer(players.find((player) => player.login === login).buzzStatus === 'BUZZED');
-  }
+  // const checkIfCanAnswer = (players) => {
+  //   setCanAnswer(players.find((player) => player.login === login).buzzStatus === 'BUZZED');
+  // }
 
   const handleReleaseBuzz = async () => {
     try {
@@ -153,7 +168,7 @@ const SelectQuestion = (props) => {
                 </FormGroup>
               </div>
               <br />
-              <BuzzButton handleBuzzin={handleBuzzin} />
+              {canBuzzIn && <BuzzButton handleBuzzin={handleBuzzin} /> }
               <br />
               {canAnswer && <Button variant="contained" onClick={() => handleAnswerSubmit()}>Answer</Button>}
               <br />
