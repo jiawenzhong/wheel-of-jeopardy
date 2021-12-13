@@ -106,10 +106,6 @@ const SelectQuestion = (props) => {
     }
   }
 
-  // const checkIfCanAnswer = (players) => {
-  //   setCanAnswer(players.find((player) => player.login === login).buzzStatus === 'BUZZED');
-  // }
-
   const handleReleaseBuzz = async () => {
     try {
       const game = await buzzRelease(gameId);
@@ -168,7 +164,7 @@ const SelectQuestion = (props) => {
                 </FormGroup>
               </div>
               <br />
-              {canBuzzIn && <BuzzButton handleBuzzin={handleBuzzin} /> }
+              { <BuzzButton handleBuzzin={handleBuzzin} /> }
               <br />
               {canAnswer && <Button variant="contained" onClick={() => handleAnswerSubmit()}>Answer</Button>}
               <br />

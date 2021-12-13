@@ -28,6 +28,7 @@ export const sendSelectedCategories = async (categoties, gameId) => {
   try {
     const url = api_url + `game/selectCategories?gameId=${gameId}`;
     const result = await axios.post(url, categoties);
+    console.log('sendSelected', result, categoties);
     return result;
   } catch (e) {
     throw Error;
