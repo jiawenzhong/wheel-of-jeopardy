@@ -2,7 +2,7 @@ import { makeStyles, Container } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import BuzzButton from '../components/buzz-button';
 import DecisionWheel from '../components/wheel';
-import { getSelectedCategories, getPlayer, gamePlay, getAllCategories, buzzIn } from '../api/game';
+import { getSelectedCategories, getPlayer, gamePlay, getAllCategories, buzzIn, getAllGames } from '../api/game';
 import { Typography } from '@material-ui/core';
 import { CATEGORY_STORAGE, GAMEID_STORAGE, GAME_FINISH_MESSAGE, LATE_MESSAGE, LOGIN_STORAGE, SCORE_STORAGE, SESSION_ID } from '../constants';
 
@@ -24,7 +24,12 @@ document.body.style = 'background: orange;';
 const Game = () => {
   const [data, setData] = useState([]);
   const [player, setPlayer] = useState();
+  const [score, setScore] = useState();
+  const [player2, setPlayer2] = useState();
+  const [player3, setPlayer3] = useState();
   const styles = useStyles();
+  const gameId = window.localStorage.getItem(GAMEID_STORAGE);
+  const login = getPlayer().login;
 
   // const handleBuzzin = async () => {
   //   try {
@@ -43,6 +48,30 @@ const Game = () => {
   //     console.log(e);
   //   }
   // }
+  
+  useEffect(() => {
+    // TODO: save session ID when user login, then use session ID to get player
+    const result = getPlayer();
+    setPlayer(result);
+  }, []);
+
+  useEffect(() => {
+    async function getGames() {
+      try {
+        const game = await getAllGames(gameId);
+        const players = [game.player1, game.player2, game.player3];
+        const currentPlayer = players.find(p => p.login === login);
+        console.log(currentPlayer);
+        window.localStorage.setItem(SCORE_STORAGE, currentPlayer.score)
+        setScore(currentPlayer.score);
+        setPlayer2(game.player2)
+        setPlayer3(game.player3)
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    getGames(gameId);
+  }, [gameId])
 
   useEffect(() => {
     // async function getAllCateories() {
@@ -75,19 +104,22 @@ const Game = () => {
 
   }, []);
 
-  useEffect(() => {
-    // TODO: save session ID when user login, then use session ID to get player
-    const result = getPlayer();
-    setPlayer(result);
-  }, []);
   return (
     
     <Container className={styles.root}>
       {player && (
         <div>
           <Typography variant="h3">Player: {player.login}</Typography>
-          <Typography variant="h3">Score: {player.score}</Typography>
+          <Typography variant="h3">Score: {score}</Typography>
           <Typography variant="subtitle1">Session ID: {window.localStorage.getItem(GAMEID_STORAGE)}</Typography>
+          {player2 && player3 && (
+            <>
+              <Typography variant="h5">Player2: {player2.login}</Typography>
+              <Typography variant="h5">Score: {player2.score}</Typography>
+              <Typography variant="h5">Player3: {player3.login}</Typography>
+              <Typography variant="h5">Score: {player3.score}</Typography>
+            </>
+          )}
         </div>
       )}
       <br />

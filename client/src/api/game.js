@@ -168,3 +168,14 @@ export const buzzRelease = async (gameId) => {
     return error;
   }
 }
+
+export const getAllGames = async (gameId) => {
+  const url = api_url + `game/getAllGames`;
+  try {
+    const result = await axios.get(url);
+    return result.data.extend.games[gameId];
+  } catch (error) {
+    return error;
+  }
+}
+

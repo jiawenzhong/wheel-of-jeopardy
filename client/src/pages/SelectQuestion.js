@@ -73,6 +73,10 @@ const SelectQuestion = (props) => {
       if (playGame.msg === ROUTES.LATE_MESSAGE) {
         window.alert(ROUTES.LATE_MESSAGE);
       }
+      if (playGame.players.length) {
+        const currentPlayer = playGame.players.find(p => p.login === login);
+        window.localStorage.setItem(ROUTES.SCORE_STORAGE, currentPlayer.score)
+      }
       // checkIfCanAnswer(playGame.players)
       await checkBuzzed();
       console.log('playGame', playGame)
